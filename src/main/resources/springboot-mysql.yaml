@@ -61,6 +61,10 @@ spec:
         app: mysql
         tier: database
     spec:
+       volumes:
+         -  name: mysql-persistent-storage # Obtaining 'vloume' from PVC
+            persistentVolumeClaim:
+              claimName: mysql-pv-claim
       containers:
       - image: mysql:5.7 # image from docker-hub
         args:
@@ -93,7 +97,7 @@ spec:
         volumeMounts:        # Mounting voulume obtained from Persistent Volume Claim
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql #This is the path in the container on which the mounting will take place.
-      volumes: []
+     
      
  
 ---
