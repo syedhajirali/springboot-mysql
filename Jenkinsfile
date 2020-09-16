@@ -33,7 +33,7 @@ pipeline {
     stage('Deploy App to Kubernetes Cluster') {
       steps {
         script {
-          kubernetesDeploy(configs: "springboot-mysql.yaml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "../resources/springboot-mysql.yaml", kubeconfigId: "mykubeconfig")
         }
       }
     }
