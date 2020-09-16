@@ -51,7 +51,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>employee</finalName>
+		<finalName>springboot-mysql</finalName>
 	</build>
 
 </project>
