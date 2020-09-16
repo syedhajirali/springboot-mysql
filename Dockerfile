@@ -1,4 +1,9 @@
-FROM openjdk:8
-COPY target/springboot-mysql.jar /springboot-mysql.jar
-EXPOSE 8080/tcp
-ENTRYPOINT ["java", "-jar", "/springboot-mysql.jar"]
+FROM maven:3.5.2-jdk-8-alpine AS MAVEN_BUILD
+COPY pom.xml /build/
+COPY src /build/src/
+WORKDIR /build/
+RUN mvn clean install package
+FROM openjdk:8-jre-alpine
+WORKDIR /app
+COPY --from=MAVEN_BUILD /build/target/springboot-mysql.jar /app/
+ENTRYPOINT ["java", "-jar", "springboot-mysql.jar"]
