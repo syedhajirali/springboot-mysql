@@ -23,6 +23,23 @@ data:
  password: YWRtaW4xMjM=
  
 ---
+# Define a 'Service' To Expose mysql to Other Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql  # DNS name 
+  labels:
+    app: mysql
+    tier: database
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:       # mysql Pod Should contain same labels
+    app: mysql
+    tier: database
+  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
+---
 # Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -36,10 +53,8 @@ spec:
     - ReadWriteOnce   #This specifies the mode of the claim that we are trying to create.
   resources:
     requests:
-      storage: 4Gi    #This will tell kubernetes about the amount of space we are trying to claim.
+      storage: 10Gi    #This will tell kubernetes about the amount of space we are trying to claim.
 ---
-
-
 # Configure 'Deployment' of mysql server
 apiVersion: apps/v1
 kind: Deployment
@@ -97,24 +112,6 @@ spec:
       - name: mysql-persistent-storage # Obtaining 'vloume' from PVC
         persistentVolumeClaim:
           claimName: mysql-pv-claim
- 
----
-# Define a 'Service' To Expose mysql to Other Services
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql  # DNS name 
-  labels:
-    app: mysql
-    tier: database
-spec:
-  ports:
-    - port: 3306
-      targetPort: 3306
-  selector:       # mysql Pod Should contain same labels
-    app: mysql
-    tier: database
-  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
 ---
 
 apiVersion: apps/v1 
