@@ -23,23 +23,6 @@ data:
  password: YWRtaW4xMjM=
  
 ---
-# Define a 'Service' To Expose mysql to Other Services
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql  # DNS name 
-  labels:
-    app: mysql
-    tier: database
-spec:
-  ports:
-    - port: 3306
-      targetPort: 3306
-  selector:       # mysql Pod Should contain same labels
-    app: mysql
-    tier: database
-  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
----
 # Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -55,6 +38,8 @@ spec:
     requests:
       storage: 1Gi    #This will tell kubernetes about the amount of space we are trying to claim.
 ---
+
+
 # Configure 'Deployment' of mysql server
 apiVersion: apps/v1
 kind: Deployment
@@ -114,23 +99,24 @@ spec:
           claimName: mysql-pv-claim
  
 ---
-kind: Service
+# Define a 'Service' To Expose mysql to Other Services
 apiVersion: v1
+kind: Service
 metadata:
-  name: springboot-mysql
+  name: mysql  # DNS name 
   labels:
-    name: springboot-mysql
+    app: mysql
+    tier: database
 spec:
   ports:
-    - nodePort: 30163 
-      port: 8080      
-      targetPort: 8080  
-      protocol: TCP
-  selector:           
-    app: springboot-mysql
-  type: NodePort       
-
+    - port: 3306
+      targetPort: 3306
+  selector:       # mysql Pod Should contain same labels
+    app: mysql
+    tier: database
+  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant
 ---
+
 apiVersion: apps/v1 
 kind: Deployment    
 metadata:              
@@ -171,4 +157,20 @@ spec:
               secretKeyRef:
                 name: db-credentials
                 key: password     
-        
+kind: Service
+apiVersion: v1
+metadata:
+  name: springboot-mysql
+  labels:
+    name: springboot-mysql
+spec:
+  ports:
+    - nodePort: 30163 
+      port: 8080      
+      targetPort: 8080  
+      protocol: TCP
+  selector:           
+    app: springboot-mysql
+  type: NodePort       
+
+---
