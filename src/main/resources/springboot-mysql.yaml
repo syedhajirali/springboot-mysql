@@ -1,3 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-conf
+data:
+ host: mysql
+ name: test  
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+data:
+ username: dGVzdHVzZXI=
+ password: dGVzdHVzZXJAMTIz
+ 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-root-credentials
+data:
+ password: YWRtaW4xMjM=
+ 
+---
+
 # Define a 'Service' To Expose mysql to Other Services
 apiVersion: v1
 kind: Service
